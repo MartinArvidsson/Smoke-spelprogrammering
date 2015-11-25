@@ -12,7 +12,6 @@ namespace Game1
         private int fieldsize;
         int width;
         int height;
-        //private float particlesize = 0.02f;
         float scale = 1;
         public void setFieldSize(Viewport board) //If width is bigger than height use it for scaling, otherwhise the other way around
         {

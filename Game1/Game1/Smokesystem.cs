@@ -9,25 +9,45 @@ namespace Game1
 {
     class Smokesystem
     {
-         private int numberofsmokes = 10;
-
-        public Smokeparticle[] smokes;
+        private List<Smokeparticle> particles = new List<Smokeparticle>();
+        private int numberofsmokes = 300;
+        private int lifetimeofsmoke = 3;
         private static Random rand = new Random();
+        private Texture2D smoke;
 
-        public Smokesystem(Texture2D smoke)
+        public Smokesystem(Texture2D smokeTexture)
         {
-            smokes = new Smokeparticle[numberofsmokes];
-            for (int i = 0; i < smokes.Length; i++)
+            smoke = smokeTexture;
+        }
+
+        public void addnewsmoke()
+        {
+            if(particles.Count < numberofsmokes)
             {
-                smokes[i] = new Smokeparticle(smoke, rand);
+                particles.Add(new Smokeparticle(smoke,rand,lifetimeofsmoke));
             }
         }
 
+        public void Update(float elapsedtime)
+        {
+            if(elapsedtime >= (float)lifetimeofsmoke /(float)numberofsmokes)
+            {
+                addnewsmoke();
+            }
+            foreach(Smokeparticle particle in particles)
+            {
+                particle.Updateposition(elapsedtime);
+                if(particle.islifeover())
+                {
+                    particle.Spawnnewparticle();
+                }
+            }
+        }
         public void Draw(SpriteBatch spritebatch, Camera camera,Texture2D smokecloud)
         {
             spritebatch.Begin();
 
-            foreach (Smokeparticle smoke in smokes) 
+            foreach (Smokeparticle smoke in particles) 
             {
                 smoke.Draw(spritebatch, camera, smokecloud);
             }

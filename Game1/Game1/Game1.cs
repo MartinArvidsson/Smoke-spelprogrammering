@@ -72,16 +72,7 @@ namespace Game1
             {
                 Exit();
             }
-            // TODO: Add your update logic here
-            if (Keyboard.GetState().IsKeyDown(Keys.R))
-            {
-                smokesystem = new Smokesystem(smokecloud); //Creates a new instance so a new explosion is created
-            }
-
-            foreach (Smokeparticle smoke in smokesystem.smokes) //Moves the particles
-            {
-                smoke.Updateposition((float)gameTime.ElapsedGameTime.TotalSeconds);
-            }
+            smokesystem.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             base.Update(gameTime);
         }
 

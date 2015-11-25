@@ -10,18 +10,20 @@ namespace Game1
     class Smokeparticle
     {
         public Vector2 randomdirection;
-        public float maxparticlespeed = 0.3f;
+        Color color = new Color();
+        public float maxparticlespeed = 0.2f;
 
         public Vector2 startingpos = new Vector2(0.5f, 0.95f);
         private Vector2 currentpos;
         public Vector2 acceleration = new Vector2(0.0f, -0.75f);
         public Vector2 velocity;
-        
+        Random random = new Random();
         private float particleminsize = 0.09f;
         private float particlemaxsize = 0.5f;
-        private float timetolive = 5f;
+        private float timetolive;
         private float lifepercentage;
         private float timehaslived;
+
         private float randrotation;
         private float particlesize;
         private float rotation;
@@ -29,29 +31,40 @@ namespace Game1
 
 
 
-        public Smokeparticle(Texture2D spark, Random random) //Creates the random direction and speed
+        public Smokeparticle(Texture2D spark, Random _random,float lifetime) //Creates the random direction and speed
         {
+            random = _random;
+            timetolive = lifetime;
             Spawnnewparticle();
-            Getrandomdirection(random);
-            randrotation = 0.1f * ((float)random.NextDouble() - (float)random.NextDouble());
+            randrotation = 0.01f * ((float)random.NextDouble() - (float)random.NextDouble());
         }
 
-        private void Spawnnewparticle()
+        public void Spawnnewparticle()
         {
             particlesize = particleminsize;
             timehaslived = 0;
             currentpos = startingpos;
             rotation = 0;
-            fade = 1f;
-        }
-
-        private void Getrandomdirection(Random random)
-        {
+            fade = 0.8f;
+            color = new Color(fade, fade, fade, fade);
             randomdirection = new Vector2((float)random.NextDouble() - 0.5f, (float)random.NextDouble() - 0.5f);
             randomdirection.Normalize();
 
             randomdirection = randomdirection * ((float)random.NextDouble() * maxparticlespeed);
             velocity = randomdirection;
+ 
+        }
+
+        public bool islifeover()
+        {
+            if(timehaslived >= timetolive)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public void Updateposition(float elapsedtime)
@@ -65,6 +78,8 @@ namespace Game1
 
             velocity = elapsedtime * acceleration + velocity;
             currentpos = elapsedtime * velocity + currentpos;
+
+            color = new Color(fade, fade, fade, fade);
         }
 
         public void Draw(SpriteBatch spritebatch, Camera camera, Texture2D smokecloud)
@@ -72,8 +87,7 @@ namespace Game1
             float scale = camera.Scale(smokecloud,particlesize);
             //Coursepress
             //color fades to 0
-            Color color = new Color(fade, fade, fade, fade);
-            spritebatch.Draw(smokecloud, camera.Converttovisualcoords(currentpos, smokecloud), null, Color.White, rotation, randomdirection, scale, SpriteEffects.None, 0);
+            spritebatch.Draw(smokecloud, camera.Converttovisualcoords(currentpos, smokecloud), null, color, rotation, randomdirection, scale, SpriteEffects.None, 0);
 
 
         }
